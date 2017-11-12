@@ -1,5 +1,6 @@
 package android_ffmpegtest.android_ffmpegtest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native void open(String inputStr, String outStr);
+
+    public void startVideo(View view){
+
+        startActivity(new Intent(MainActivity.this,VideoActivity.class));
+    }
 
 
 

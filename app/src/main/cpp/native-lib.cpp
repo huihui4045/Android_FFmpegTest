@@ -8,13 +8,16 @@ extern "C"{
 #include "libavformat/avformat.h"
 //像素处理
 #include "libswscale/swscale.h"
+#include <android/native_window_jni.h>
 }
 
 #define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,"jason",FORMAT,##__VA_ARGS__);
 #define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"jason",FORMAT,##__VA_ARGS__);
 
 
-extern "C"
+extern "C"{
+
+
 JNIEXPORT void JNICALL
 Java_android_1ffmpegtest_android_1ffmpegtest_MainActivity_open(JNIEnv *env, jobject instance,
                                                                jstring inputStr_, jstring outStr_) {
@@ -84,6 +87,8 @@ Java_android_1ffmpegtest_android_1ffmpegtest_MainActivity_open(JNIEnv *env, jobj
 
     int frameCount=0;
 
+
+
    SwsContext *swsContext= sws_getContext(pCodeContext->width,pCodeContext->height,pCodeContext->pix_fmt,
                    pCodeContext->width,pCodeContext->height,AV_PIX_FMT_YUV420P,SWS_BICUBIC,
                    NULL,NULL,NULL
@@ -121,5 +126,91 @@ Java_android_1ffmpegtest_android_1ffmpegtest_MainActivity_open(JNIEnv *env, jobj
 
     avformat_free_context(context);
     // TODO
+
+}
+
+JNIEXPORT void JNICALL
+Java_android_1ffmpegtest_android_1ffmpegtest_VideoView_render(JNIEnv *env, jobject instance,
+                                                              jstring input_, jobject surface) {
+    const char *inputStr = env->GetStringUTFChars(input_, 0);
+
+
+    //注册各大组件
+    av_register_all();
+
+    AVFormatContext *context=  avformat_alloc_context();
+
+    if(avformat_open_input(&context,inputStr,NULL,NULL)){
+
+        LOGE("打开失败");
+
+        return;
+    }
+
+    if(avformat_find_stream_info(context,NULL)<0){
+
+        LOGE("获取信息失败");
+    }
+
+
+    int video_stream_index=-1;
+
+    for(int i=0;i<context->nb_streams;i++){
+
+        LOGE("循环 %d",i);
+
+        if(context->streams[i]->codec->codec_type==AVMEDIA_TYPE_VIDEO){
+            video_stream_index=i;
+        }
+    }
+
+
+    //获取解码器上下文
+    AVCodecContext *pCodeContext= context->streams[video_stream_index]->codec;
+
+    //解码器
+    AVCodec *pAVcode=   avcodec_find_decoder(pCodeContext->codec_id);
+
+    if(avcodec_open2(pCodeContext,pAVcode,NULL)<0){
+
+        LOGE("解码失败");
+
+        return;
+    }
+
+    //分配内存
+    AVPacket *avPacket= (AVPacket *) av_malloc(sizeof(AVPacket));
+
+    //初始化结构体
+    av_init_packet(avPacket);
+
+
+    AVFrame *avFrame=  av_frame_alloc();
+
+    int frameCount=0;
+
+    int length=0;
+
+    SwsContext *swsContext= sws_getContext(pCodeContext->width,pCodeContext->height,pCodeContext->pix_fmt,
+                                           pCodeContext->width,pCodeContext->height,AV_PIX_FMT_RGBA,SWS_BILINEAR,
+                                           NULL,NULL,NULL
+    );
+
+
+    int got_picture_ptr;
+
+    while (av_read_frame(context,avPacket)>=0) {
+
+        //解封装  根据Frame进行原生绘制
+        length= avcodec_decode_video2(pCodeContext, avFrame, &got_picture_ptr, avPacket);
+
+        if (got_picture_ptr > 0) {
+
+        }
+
+    }
+
+
+        }
 
 }
