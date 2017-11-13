@@ -1,9 +1,11 @@
 package android_ffmpegtest.android_ffmpegtest;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 /**
@@ -23,12 +25,11 @@ public class VideoView extends SurfaceView {
 
 
 
-    public VideoView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
     private void init() {
 
+        SurfaceHolder holder=getHolder();
+
+        holder.setFormat(PixelFormat.RGBA_8888);
     }
 
     public void player(final String input){
@@ -39,7 +40,7 @@ public class VideoView extends SurfaceView {
 
                 render(input,VideoView.this.getHolder().getSurface());
             }
-        });
+        }).start();
     }
 
     private native void render(String input, Surface surface);
