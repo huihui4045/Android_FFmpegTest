@@ -1,5 +1,7 @@
 #include <jni.h>
 #include <string>
+#include <android/log.h>
+
 
 extern "C"{
 //编码
@@ -26,7 +28,11 @@ Java_android_1ffmpegtest_android_1ffmpegtest_MainActivity_open(JNIEnv *env, jobj
 
   AVFormatContext *context=  avformat_alloc_context();
 
-    if(avformat_open_input(&context,inputStr,NULL,NULL)){
+
+
+
+
+    if(avformat_open_input(&context,inputStr,NULL,NULL)<0){
 
         LOGE("打开失败");
 

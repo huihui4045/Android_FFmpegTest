@@ -3,12 +3,15 @@ package android_ffmpegtest.android_ffmpegtest;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG="MainActivity";
 
 
    /* native-lib
@@ -54,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
     public void load(View view) {
         String input = new File(Environment.getExternalStorageDirectory(), "input.mp4").getAbsolutePath();
         String  output= new File(Environment.getExternalStorageDirectory(), "output.yuv").getAbsolutePath();
+
+
+        File file=new File(input);
+
+        Log.e(TAG, "fileName: "+file.getName()+" "+file.length());
+
+
+        Log.e("MainActivity","input:"+input);
         open(input, output);
     }
 
