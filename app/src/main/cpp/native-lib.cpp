@@ -16,8 +16,10 @@ extern "C"{
 #define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,"jason",FORMAT,##__VA_ARGS__);
 #define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"jason",FORMAT,##__VA_ARGS__);
 
-
+//http://www.meizitu.com/a/4164.html
 extern "C"{
+
+
 
 
 JNIEXPORT void JNICALL
