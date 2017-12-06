@@ -19,7 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".VideoActivity"></activity>
+        <activity android:name=".VideoActivity" />
+        <activity android:name=".Mp42YuvActivity" />
+        <activity android:name=".HelloWorldActivity"></activity>
     </application>
 
 </manifest>
